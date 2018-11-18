@@ -1,0 +1,57 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "environment-name": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the environemnt, reused in all asset names. Use 'tyler' or 'tkh'"
+            },
+            "minLength": 3
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2017-08-01",
+            "kind": "linux",
+            "name": "[concat('node-web-farm-', parameters('environment-name'))]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [],
+            "sku": {
+                "name": "B1"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2016-03-01",
+            "name": "[concat('node-web-app-', parameters('environment-name'))]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "siteConfig": {
+                    "appSettings": [
+                        {
+                            "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
+                            "value": "false"
+                        },
+                        {
+                            "name": "DOCKER_REGISTRY_SERVER_URL",
+                            "value": "https://axian.azurecr.io"
+                        },
+                        {
+                            "name": "DOCKER_REGISTRY_SERVER_USERNAME",
+                            "value": "axian"
+                        },
+                        {
+                            "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
+                            "value": "V0tAtkJQip9soC8/tGm=R6iwkIQ58FyZ"
+                        }
+                    ],
+                    "appCommandLine": "",
+                    "linuxFxVersion": "DOCKER|axian.azurecr.io/ffthh/tkh/node-web-app:latest"
+                },
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', concat('node-web-farm-', parameters('environment-name')))]"
+            }
+        }
+    ]
+}
