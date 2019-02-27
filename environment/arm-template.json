@@ -5,7 +5,7 @@
         "environment-name": {
             "type": "string",
             "metadata": {
-                "description": "Name of the environemnt, reused in all asset names. Use 'tyler' or 'tkh'"
+                "description": "Name of the environemnt, reused in all asset names. Use 'dev' or your initials."
             },
             "minLength": 3
         }
